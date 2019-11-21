@@ -1,14 +1,20 @@
 use std::cmp::PartialEq;
 
 #[derive(Debug)]
-pub struct PokemonType<'a>{
-    name: &'a str,
-    weaknesses: Option<Vec<PokemonType<'a>>>,
-    strengths: Option<Vec<PokemonType<'a>>>,
-    ineffectivities: Option<Vec<PokemonType<'a>>>
+pub struct PokemonType<'a> {
+    pub name: &'a str,
+    weaknesses: Vec<PokemonType<'a>>,
+    strengths: Vec<PokemonType<'a>>,
+    ineffectivities: Vec<PokemonType<'a>>
 }
 
-impl <'a> PartialEq for PokemonType<'a>{
+pub enum TypeFactor<'a> {
+    Weakness(PokemonType<'a>),
+    Strength(PokemonType<'a>),
+    Ineffective(PokemonType<'a>)
+}
+
+impl <'a> PartialEq for PokemonType<'a> {
     
     fn eq(&self, other: &Self) -> bool{
         self.name == other.name
@@ -18,29 +24,32 @@ impl <'a> PartialEq for PokemonType<'a>{
 
 impl <'a> PokemonType<'a>{
     
-    pub fn new(name: &str) -> PokemonType{
+    pub fn new(name: &str) -> PokemonType {
         PokemonType{
             name: name,
-            strengths: None,
-            weaknesses: None,
-            ineffectivities: None 
+            strengths: Vec::new(),
+            weaknesses: Vec::new(),
+            ineffectivities: Vec::new()
         }
     }
 
-    pub fn add_weakness(self, weakness: PokemonType<'_>) -> bool {
-        match self.weaknesses{
-            Some(mut weaknesses) => {
-                if weaknesses.contains(&weakness){
-                    return false
-                };
-                weaknesses.push(weakness);
-                true
-            },
-            None => {
-                let mut weaknesses: Vec<PokemonType> = Vec::new();
-                weaknesses.push(weakness);
-                true
-            }
+    pub fn get_weaknesses(&self) -> &Vec<PokemonType<'a>>{
+        &self.weaknesses
+    }
+
+    pub fn get_strengths(&self) -> &Vec<PokemonType<'a>> {
+        &self.strengths
+    }
+
+    pub fn get_ineffectivities(&self) -> &Vec<PokemonType<'a>> {
+        &self.ineffectivities
+    }
+
+    pub fn add_type_factor(&mut self, factor: TypeFactor<'a>){
+        match factor {
+            TypeFactor::Weakness(t) => self.weaknesses.push(t),
+            TypeFactor::Strength(t) => self.strengths.push(t),
+            TypeFactor::Ineffective(t) => self.ineffectivities.push(t)
         }
     }
 }
