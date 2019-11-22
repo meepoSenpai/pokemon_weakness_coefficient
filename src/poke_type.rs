@@ -1,51 +1,40 @@
-use std::cmp::PartialEq;
-
 #[derive(Debug)]
-pub struct PokemonType<'a> {
-    pub name: &'a str,
-    weaknesses: Vec<PokemonType<'a>>,
-    strengths: Vec<PokemonType<'a>>,
-    ineffectivities: Vec<PokemonType<'a>>
+pub struct TypeInteraction{
+    weaknesses: Vec<String>,
+    strengths: Vec<String>,
+    ineffectivities: Vec<String>
 }
 
-pub enum TypeFactor<'a> {
-    Weakness(PokemonType<'a>),
-    Strength(PokemonType<'a>),
-    Ineffective(PokemonType<'a>)
+pub enum TypeFactor{
+    Weakness(String),
+    Strength(String),
+    Ineffective(String)
 }
 
-impl <'a> PartialEq for PokemonType<'a> {
+
+impl TypeInteraction{
     
-    fn eq(&self, other: &Self) -> bool{
-        self.name == other.name
-    }
-
-}
-
-impl <'a> PokemonType<'a>{
-    
-    pub fn new(name: &str) -> PokemonType {
-        PokemonType{
-            name: name,
+    pub fn new() -> TypeInteraction{
+        TypeInteraction{
             strengths: Vec::new(),
             weaknesses: Vec::new(),
             ineffectivities: Vec::new()
         }
     }
 
-    pub fn get_weaknesses(&self) -> &Vec<PokemonType<'a>>{
-        &self.weaknesses
+    pub fn get_weaknesses(&self) -> Vec<String>{
+        self.weaknesses.clone()
     }
 
-    pub fn get_strengths(&self) -> &Vec<PokemonType<'a>> {
-        &self.strengths
+    pub fn get_strengths(&self) -> Vec<String> {
+        self.strengths.clone()
     }
 
-    pub fn get_ineffectivities(&self) -> &Vec<PokemonType<'a>> {
-        &self.ineffectivities
+    pub fn get_ineffectivities(&self) -> Vec<String> {
+        self.ineffectivities.clone()
     }
 
-    pub fn add_type_factor(&mut self, factor: TypeFactor<'a>){
+    pub fn add_type_factor(&mut self, factor: TypeFactor){
         match factor {
             TypeFactor::Weakness(t) => self.weaknesses.push(t),
             TypeFactor::Strength(t) => self.strengths.push(t),
